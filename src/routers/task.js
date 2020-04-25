@@ -47,7 +47,7 @@ router.get("/tasks", auth, async (req, res) => {
           sort,
         },
       })
-      .execPopulate(); //This is uses the relationship between user and tasks to get all tasks of a user.
+      .execPopulate(); //This uses the relationship between user and tasks to get all tasks of a user.
     res.send(req.user.tasks);
   } catch (error) {
     res.status(500).send();

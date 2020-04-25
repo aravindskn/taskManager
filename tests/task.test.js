@@ -11,8 +11,9 @@ const {
   setUpDatabase,
 } = require("./fixtures/db");
 
-beforeEach(setUpDatabase);
+beforeEach(setUpDatabase); //Setup DB before Testing
 
+//Test to create a Task
 test("Create Task for User", async () => {
   const response = await request(app)
     .post("/tasks")
@@ -22,11 +23,12 @@ test("Create Task for User", async () => {
     })
     .expect(201);
 
-  const task = await Task.findById(response.body._id);
-  expect(task).not.toBeNull();
+  const task = await Task.findById(response.body._id); //Get User from DB
+  expect(task).not.toBeNull(); //Check if Data is valid from creation
   expect(task.completed).toEqual(false);
 });
 
+//Test Tasks of a User
 test("Get Tasks from a User", async () => {
   const response = await request(app)
     .get("/tasks")
@@ -35,6 +37,7 @@ test("Get Tasks from a User", async () => {
   expect(response.body.length).toBe(2);
 });
 
+//Test to Delete tasks of other User
 test("Try to Fetch Tasks of other Users", async () => {
   await request(app)
     .delete("/tasks/" + taskOne._id)

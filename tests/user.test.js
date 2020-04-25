@@ -3,8 +3,9 @@ const app = require("../src/app");
 const User = require("../src/models/user");
 const { userOneId, userOne, setUpDatabase } = require("./fixtures/db");
 
-beforeEach(setUpDatabase);
+beforeEach(setUpDatabase); //Setup DB before Test
 
+//Test to create new User
 test("New User Sign Up", async () => {
   const response = await request(app)
     .post("/users")
@@ -27,7 +28,7 @@ test("New User Sign Up", async () => {
   });
   expect(user.password).not.toBe("Test123");
 });
-
+//Test to check if Login User Exist
 test("Login User Exist", async () => {
   const response = await request(app)
     .post("/users/login")
@@ -39,7 +40,7 @@ test("Login User Exist", async () => {
   const user = await User.findById(response.body.user._id);
   expect(response.body.token).toBe(user.tokens[1].token);
 });
-
+//Test for Login Failure
 test("Login Failure", async () => {
   await request(app)
     .post("/users/login")
@@ -49,7 +50,7 @@ test("Login Failure", async () => {
     })
     .expect(400);
 });
-
+//Test to get Profile
 test("Get Profile for User", async () => {
   await request(app)
     .get("/users/me")
@@ -57,11 +58,11 @@ test("Get Profile for User", async () => {
     .send()
     .expect(200);
 });
-
+//Test for Unauthorized Login
 test("UnAuthorized User", async () => {
   await request(app).get("/users/me").send().expect(401);
 });
-
+//Test to Delete User
 test("Delete created user account", async () => {
   await request(app)
     .delete("/users/me/")
@@ -71,11 +72,11 @@ test("Delete created user account", async () => {
   const user = await User.findById(userOneId);
   expect(user).toBeNull();
 });
-
+//Test for Unauthorized Deletion
 test("Delete created user account, UnAuthorized", async () => {
   await request(app).delete("/users/me/").send().expect(401);
 });
-
+//Test to upload File
 test("Add Profile Pic", async () => {
   await request(app)
     .post("/users/me/avatar")
@@ -86,7 +87,7 @@ test("Add Profile Pic", async () => {
   const user = await User.findById(userOneId);
   expect(user.avatar).toEqual(expect.any(Buffer));
 });
-
+//Test to Update User
 test("Update User", async () => {
   await request(app)
     .patch("/users/me")
@@ -98,7 +99,7 @@ test("Update User", async () => {
   const user = await User.findById(userOneId);
   expect(user.name).toBe("Test User 1");
 });
-
+//Test to check Failure of Update User
 test("Update User Failure", async () => {
   await request(app)
     .patch("/users/me")

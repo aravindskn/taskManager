@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Tasks = require("./task");
 
+//User Collection Schema
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -16,6 +17,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       validate(value) {
+        //Validate Email using Validator
         if (!validator.isEmail(value)) throw new Error("Email was not valid.");
       },
       trim: true,
@@ -25,6 +27,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
       validate(value) {
+        //Validate Age
         if (value < 0) throw new Error("Age must be greater than 0.");
       },
     },
@@ -34,11 +37,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: [7, "Password must have greater than of 6 characters"],
       validate(value) {
+        //Validate Password using Validator
         if (validator.contains(value, "password"))
           throw new Error("Password must not contain string password.");
       },
     },
     tokens: [
+      //Add Token to DB
       {
         token: {
           type: String,
@@ -53,6 +58,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+//Referencing each Task with one User
 userSchema.virtual("tasks", {
   ref: "Tasks",
   localField: "_id",
